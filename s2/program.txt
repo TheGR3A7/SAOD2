@@ -1,0 +1,149 @@
+int getEnter()
+{
+	int Enter;
+	do
+	{
+		printf("Заполнить в виде одномерного массива или с помощью массива указателей?[1/2]\n");
+		scanf_s("%d", &Enter);
+	} while (Enter != 1 && Enter != 2);
+	return Enter;
+}
+
+void countRowsAndColumns(int &rows, int &columns)
+{
+	do {
+		printf("Введите количество строк: "); scanf_s("%d", &rows);
+		printf("Введите количество столбцов: "); scanf_s("%d", &columns);
+	} while (rows < 1  || columns < 1);
+}
+
+int* CreateWithArray(int rows, int columns)
+{
+	int* array = (int*)malloc(rows * columns * sizeof(int));
+	return array;
+}
+
+void KeyboardFillingFirst(int* array, int rows, int columns)
+{
+	for (int i = 0; i < rows; i++)
+		for (int j = 0; j < columns; j++)
+		{
+			printf("Введите число: ");
+			scanf_s("%d", (array + i * columns + j));
+		}
+}
+
+void KeyboardFillingSecond(int** array, int rows, int columns)
+{
+	for (int i = 0; i < rows; i++)
+		for (int j = 0; j < columns; j++)
+		{
+			printf("Введите число: ");
+			scanf_s("%d", &array[i][j]);
+		}
+}
+
+
+void showArrayByArray(int* array, int rows, int columns)
+{
+	for (int i = 0; i < rows; i++)
+	{
+		for (int j = 0; j < columns; j++)
+			printf("%5i", array[i * columns + j]);
+		printf("\n");
+	}
+}
+
+int** CreateWithPointer(int rows, int columns)
+{
+	int** array = (int**)malloc(rows * sizeof(int*));
+	for (int i = 0; i < rows; i++)
+		array[i] = (int*)malloc(columns * sizeof(int));
+	return array;
+}
+
+void showArrayByPointer(int** array, int rows, int columns)
+{
+	for (int i = 0; i < rows; i++)
+	{
+		for (int j = 0; j < columns; j++)
+			printf("%i ", array[i][j]);
+		printf("\n");
+	}
+}
+
+void FreeForSecond(int** array, int rows)
+{
+	for (int i = 0; i < rows; i++)
+		free(array[i]);
+	free(array);
+}
+
+void summaAndMaxFirst(int* array, int rows, int columns, int &max)
+{
+
+	for (int i = 0; i < rows; i++)
+	{
+		int sum = 0;
+		for (int j = 0; j < columns; j++)
+		{
+			sum += array[i * columns + j];
+		}
+		printf("sum %d-й строки = %d\n", i + 1, sum);
+		if (sum > max)
+			max = sum;
+	}
+	printf("max sum = %d", max);
+
+}
+
+void summaAndMaxSecond(int** array, int rows, int columns, int &max)
+{
+	for (int i = 0; i < rows; i++)
+	{
+		int sum = 0;
+		for (int j = 0; j < columns; j++)
+		{
+			sum += array[i][j];
+		}
+		printf("sum %d-й строки = %d\n", i + 1, sum);
+		if (sum > max)
+			max = sum;
+	}
+
+	printf("max sum = %d", max);
+}
+
+int main()
+{
+	system("chcp 1251");
+	int rows, columns, Enter, max = -99999;
+	int* array_1;
+	int** array_2;
+
+	printf("Вычислить сумму каждой строки. Среди полученных сумм найти максимальное значение.\n");
+
+	countRowsAndColumns(rows, columns);
+
+	Enter = getEnter();
+
+	switch (Enter)
+	{
+		case 1:
+			array_1 = CreateWithArray(rows, columns);
+			KeyboardFillingFirst(array_1, rows, columns);
+			showArrayByArray(array_1, rows, columns);
+			summaAndMaxFirst(array_1, rows, columns,max);
+			free(array_1);
+			break;
+		case 2:
+			array_2 = CreateWithPointer(rows, columns);
+			KeyboardFillingSecond(array_2, rows, columns);
+			showArrayByPointer(array_2, rows, columns);
+			summaAndMaxSecond(array_2, rows, columns, max);
+			FreeForSecond(array_2, rows);
+			break;
+	}
+
+	return 0;
+}

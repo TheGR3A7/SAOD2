@@ -1,0 +1,2 @@
+system++chcp+1251++;
+FILE*+file---fopen++program1.txt+,++r++;
